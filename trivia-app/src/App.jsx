@@ -20,7 +20,18 @@ function App() {
       }
 
       const data = await response.json();
-      setQuestions(data);
+
+      const formattedQuestions = data.map((q, index) => {
+        return {
+          id: index,
+          question: q.question.text,
+          correctAnswer: q.correctAnswer,
+          answers: [...q.incorrectAnswers, q.correctAnswer],
+          selectedAnswer: null,
+        };
+      });
+
+      setQuestions(formattedQuestions);
     } catch (err) {
       setError("Could not load trivia questions.");
       console.error(err);
@@ -45,9 +56,13 @@ function App() {
         </Button>
       </Box>
 
-      <Typography align="center">
-        Questions loaded: {questions.length}
-      </Typography>
+      {!loading &&
+        !error &&
+        questions.map((q) => (
+          <Typography key={q.id} sx={{ mb: 2 }}>
+            {q.question}
+          </Typography>
+        ))}
 
       {loading && (
         <Typography align="center" sx={{ mt: 2 }}>

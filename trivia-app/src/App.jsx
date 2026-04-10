@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardContent,
+  CircularProgress,
   Container,
   Stack,
   Typography,
@@ -11,7 +12,7 @@ import {
 
 function App() {
   const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const shuffleArray = (array) => {
@@ -39,11 +40,16 @@ function App() {
       const data = await response.json();
 
       const formattedQuestions = data.map((q, index) => {
+        const allAnswers = shuffleArray([
+          ...q.incorrectAnswers,
+          q.correctAnswer,
+        ]);
+
         return {
           id: index,
           question: q.question.text,
           correctAnswer: q.correctAnswer,
-          answers: shuffleArray([...q.incorrectAnswers, q.correctAnswer]),
+          answers: allAnswers,
           selectedAnswer: null,
         };
       });
@@ -109,34 +115,46 @@ function App() {
         </Button>
       </Box>
 
+      {loading && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+          <CircularProgress />
+        </Box>
+      )}
+
+      {error && (
+        <Typography color="error" align="center" sx={{ mb: 2 }}>
+          {error}
+        </Typography>
+      )}
+
       {!loading && !error && (
         <Stack spacing={3}>
-          {questions.map((q, index) => (
-            <Card key={q.id} elevation={3}>
+          {questions.map((question, index) => (
+            <Card key={question.id} elevation={3}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  {index + 1}. {q.question}
+                  {index + 1}. {question.question}
                 </Typography>
 
                 <Stack spacing={2} sx={{ mt: 2 }}>
-                  {q.answers.map((answer, answerIndex) => (
+                  {question.answers.map((answer, answerIndex) => (
                     <Button
                       key={answerIndex}
                       variant="contained"
-                      color={getButtonColor(q, answer)}
-                      onClick={() => handleAnswerClick(q.id, answer)}
-                      disabled={q.selectedAnswer !== null}
+                      color={getButtonColor(question, answer)}
+                      onClick={() => handleAnswerClick(question.id, answer)}
+                      disabled={question.selectedAnswer !== null}
                     >
                       {answer}
                     </Button>
                   ))}
                 </Stack>
 
-                {q.selectedAnswer !== null && (
+                {question.selectedAnswer !== null && (
                   <Typography sx={{ mt: 2, fontWeight: "bold" }}>
-                    {q.selectedAnswer === q.correctAnswer
+                    {question.selectedAnswer === question.correctAnswer
                       ? "Correct!"
-                      : `Wrong! Correct answer: ${q.correctAnswer}`}
+                      : `Wrong! Correct answer: ${question.correctAnswer}`}
                   </Typography>
                 )}
               </CardContent>
@@ -149,18 +167,6 @@ function App() {
             </Typography>
           )}
         </Stack>
-      )}
-
-      {loading && (
-        <Typography align="center" sx={{ mt: 2 }}>
-          Loading...
-        </Typography>
-      )}
-
-      {error && (
-        <Typography color="error" align="center" sx={{ mt: 2 }}>
-          {error}
-        </Typography>
       )}
     </Container>
   );

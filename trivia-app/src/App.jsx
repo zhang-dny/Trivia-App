@@ -1,9 +1,34 @@
+import { useState } from "react";
 import { Box, Button, Container, Typography } from "@mui/material";
 
 function App() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const loadQuestions = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await fetch(
+        "https://the-trivia-api.com/v2/questions?limit=5"
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch questions.");
+      }
+
+      const data = await response.json();
+      setQuestions(data);
+    } catch (err) {
+      setError("Could not load trivia questions.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography variant="h3" gutterBottom align="center">
@@ -11,7 +36,7 @@ function App() {
       </Typography>
 
       <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
-        <Button variant="contained">
+        <Button variant="contained" onClick={loadQuestions}>
           Generate New Questions
         </Button>
       </Box>

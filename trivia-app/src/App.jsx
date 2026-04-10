@@ -71,6 +71,22 @@ function App() {
     );
   };
 
+  const getButtonColor = (question, answer) => {
+    if (question.selectedAnswer === null) {
+      return "primary";
+    }
+
+    if (answer === question.correctAnswer) {
+      return "success";
+    }
+
+    if (answer === question.selectedAnswer && answer !== question.correctAnswer) {
+      return "error";
+    }
+
+    return "primary";
+  };
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography variant="h3" gutterBottom align="center">
@@ -97,12 +113,21 @@ function App() {
                     <Button
                       key={answerIndex}
                       variant="contained"
+                      color={getButtonColor(q, answer)}
                       onClick={() => handleAnswerClick(q.id, answer)}
                     >
                       {answer}
                     </Button>
                   ))}
                 </Stack>
+
+                {q.selectedAnswer !== null && (
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>
+                    {q.selectedAnswer === q.correctAnswer
+                      ? "Correct!"
+                      : `Wrong! Correct answer: ${q.correctAnswer}`}
+                  </Typography>
+                )}
               </CardContent>
             </Card>
           ))}

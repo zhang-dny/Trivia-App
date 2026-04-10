@@ -6,6 +6,15 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const shuffleArray = (array) => {
+    const copy = [...array];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  };
+
   const loadQuestions = async () => {
     try {
       setLoading(true);
@@ -26,7 +35,7 @@ function App() {
           id: index,
           question: q.question.text,
           correctAnswer: q.correctAnswer,
-          answers: [...q.incorrectAnswers, q.correctAnswer],
+          answers: shuffleArray([...q.incorrectAnswers, q.correctAnswer]),
           selectedAnswer: null,
         };
       });
@@ -59,9 +68,14 @@ function App() {
       {!loading &&
         !error &&
         questions.map((q) => (
-          <Typography key={q.id} sx={{ mb: 2 }}>
-            {q.question}
-          </Typography>
+          <Box key={q.id} sx={{ mb: 3 }}>
+            <Typography sx={{ mb: 1 }}>{q.question}</Typography>
+            {q.answers.map((answer, index) => (
+              <Typography key={index} sx={{ ml: 2 }}>
+                • {answer}
+              </Typography>
+            ))}
+          </Box>
         ))}
 
       {loading && (

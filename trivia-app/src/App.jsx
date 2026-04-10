@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, Container, Typography } from "@mui/material";
 
 function App() {
@@ -28,6 +28,10 @@ function App() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadQuestions();
+  }, []);
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>

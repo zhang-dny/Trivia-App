@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Container, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Stack,
+  Typography,
+} from "@mui/material";
 
 function App() {
   const [questions, setQuestions] = useState([]);
@@ -65,18 +73,27 @@ function App() {
         </Button>
       </Box>
 
-      {!loading &&
-        !error &&
-        questions.map((q) => (
-          <Box key={q.id} sx={{ mb: 3 }}>
-            <Typography sx={{ mb: 1 }}>{q.question}</Typography>
-            {q.answers.map((answer, index) => (
-              <Typography key={index} sx={{ ml: 2 }}>
-                • {answer}
-              </Typography>
-            ))}
-          </Box>
-        ))}
+      {!loading && !error && (
+        <Stack spacing={3}>
+          {questions.map((q, index) => (
+            <Card key={q.id} elevation={3}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  {index + 1}. {q.question}
+                </Typography>
+
+                <Stack spacing={2} sx={{ mt: 2 }}>
+                  {q.answers.map((answer, answerIndex) => (
+                    <Button key={answerIndex} variant="contained">
+                      {answer}
+                    </Button>
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          ))}
+        </Stack>
+      )}
 
       {loading && (
         <Typography align="center" sx={{ mt: 2 }}>

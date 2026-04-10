@@ -87,6 +87,16 @@ function App() {
     return "primary";
   };
 
+  const getScore = () => {
+    return questions.filter(
+      (q) => q.selectedAnswer === q.correctAnswer
+    ).length;
+  };
+
+  const allAnswered =
+    questions.length > 0 &&
+    questions.every((q) => q.selectedAnswer !== null);
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography variant="h3" gutterBottom align="center">
@@ -132,6 +142,12 @@ function App() {
               </CardContent>
             </Card>
           ))}
+
+          {allAnswered && (
+            <Typography variant="h5" align="center" sx={{ mt: 2 }}>
+              Score: {getScore()} / {questions.length}
+            </Typography>
+          )}
         </Stack>
       )}
 

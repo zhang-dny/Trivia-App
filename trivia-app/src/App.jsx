@@ -64,7 +64,7 @@ function App() {
   const handleAnswerClick = (questionId, answer) => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((q) =>
-        q.id === questionId
+        q.id === questionId && q.selectedAnswer === null
           ? { ...q, selectedAnswer: answer }
           : q
       )
@@ -115,6 +115,7 @@ function App() {
                       variant="contained"
                       color={getButtonColor(q, answer)}
                       onClick={() => handleAnswerClick(q.id, answer)}
+                      disabled={q.selectedAnswer !== null}
                     >
                       {answer}
                     </Button>

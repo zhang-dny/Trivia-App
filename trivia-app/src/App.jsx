@@ -61,6 +61,16 @@ function App() {
     loadQuestions();
   }, []);
 
+  const handleAnswerClick = (questionId, answer) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((q) =>
+        q.id === questionId
+          ? { ...q, selectedAnswer: answer }
+          : q
+      )
+    );
+  };
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography variant="h3" gutterBottom align="center">
@@ -84,7 +94,11 @@ function App() {
 
                 <Stack spacing={2} sx={{ mt: 2 }}>
                   {q.answers.map((answer, answerIndex) => (
-                    <Button key={answerIndex} variant="contained">
+                    <Button
+                      key={answerIndex}
+                      variant="contained"
+                      onClick={() => handleAnswerClick(q.id, answer)}
+                    >
                       {answer}
                     </Button>
                   ))}
